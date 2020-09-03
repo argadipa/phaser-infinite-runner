@@ -5,25 +5,26 @@ import InstructionText from "../Object/InstructionText";
 import ScoreText from "../Object/ScoreText";
 import Character from "../Object/Character";
 import InteractablesBlock from "../Object/InteractablesBlock";
-import Pool from '../Object/Pool';
+import Pool from "../Object/Pool";
 import ScoreGiver from "../Object/ScoreGiver";
 import State from "../States/State";
 import GameStartState from "../States/GameStartState";
 import GameOverState from "../States/GameOverState";
-import { shuffleArray } from '../Util/Util';
+import { shuffleArray } from "../Util/Util";
 import type { IGameplayParameter, IGameData } from "../Interfaces/interface";
 import Interactables from "../Object/Interactables";
 
 export default class GameScene extends Phaser.Scene {
   // game parameter
   private _gamePlayParameter: IGameplayParameter = {
-    baseScrollSpeed: 2.8,
+    baseScrollSpeed: 4,
     baseScorePoint: 100,
     baseTimeIntervalAddScore: 3000,
     boxSpawnPositionX: 1000,
     boxSpawnPositionY: 300,
     minSpawnTimer: 1000,
-    maxSpawnTimer: 4000
+    maxSpawnTimer: 4000,
+    characterDuckTime: 1000,
   };
 
   get gameplayParameter(): IGameplayParameter {
@@ -48,14 +49,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   // game objects
-  private _fpsText: FpsText;
   private _topGround: Scrollables;
   private _bottomGround: Scrollables;
   private _mountains: Scrollables;
   private _sky: Scrollables;
   private _interactables: Array<InteractablesBlock>;
   public _character: Character;
-
 
   get character(): Character {
     return this._character;
@@ -77,14 +76,19 @@ export default class GameScene extends Phaser.Scene {
     return this._sky;
   }
 
-  get interactables():Array<InteractablesBlock>{
+  get interactables(): Array<InteractablesBlock> {
     return this._interactables;
   }
 
   // ui interfaces
+  private _fpsText: FpsText;
   private _instruction: InstructionText;
   private _scoreText: ScoreText;
 
+  get fpsText(): FpsText {
+    return this._fpsText;
+  }
+  
   get scoreText(): ScoreText {
     return this._scoreText;
   }
@@ -109,8 +113,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   // helpers
-  private _pool:Pool;
-  get pool():Pool {
+  private _pool: Pool;
+  get pool(): Pool {
     return this._pool;
   }
 
@@ -118,9 +122,6 @@ export default class GameScene extends Phaser.Scene {
   get scoreGiver(): ScoreGiver {
     return this._scoreGiver;
   }
-
-  // Event
-  public onScoreChanged: CustomEvent = new CustomEvent("value");
 
   // use this for change the game states!
   changeState(newState: State) {
@@ -170,7 +171,13 @@ export default class GameScene extends Phaser.Scene {
   }
 
   initGameObjects() {
-    this._character = new Character(this, 300, 200, "char");
+    this._character = new Character(
+      this,
+      300,
+      200,
+      "char",
+      this.gameplayParameter
+    );
     this._character.addCollider(this._platformCollider);
 
     this._topGround = new Scrollables(
@@ -212,33 +219,53 @@ export default class GameScene extends Phaser.Scene {
     this._interactables = new Array<InteractablesBlock>();
 
     for (let index = 0; index < 5; index++) {
-      const obj:InteractablesBlock = new InteractablesBlock(this, 5000, 5000, 'woodenBlock', this.gameplayParameter.baseScrollSpeed, 'death');
+      const obj: InteractablesBlock = new InteractablesBlock(
+        this,
+        5000,
+        5000,
+        "woodenBlock",
+        this.gameplayParameter.baseScrollSpeed,
+        "death"
+      );
       obj.setVisible(false);
       obj.setActive(false);
-      this._interactables.push(obj);  
+      this._interactables.push(obj);
     }
 
     for (let index = 0; index < 5; index++) {
-      const obj:InteractablesBlock = new InteractablesBlock(this, 5000, 5000, 'deathSpinner', this.gameplayParameter.baseScrollSpeed, 'death');
+      const obj: InteractablesBlock = new InteractablesBlock(
+        this,
+        5000,
+        5000,
+        "deathSpinner",
+        this.gameplayParameter.baseScrollSpeed,
+        "death"
+      );
       obj.setVisible(false);
       obj.setActive(false);
-      this._interactables.push(obj);  
+      this._interactables.push(obj);
     }
 
     for (let index = 0; index < 5; index++) {
-      const obj:InteractablesBlock = new InteractablesBlock(this, 5000, 5000, 'gem', this.gameplayParameter.baseScrollSpeed, 'death');
+      const obj: InteractablesBlock = new InteractablesBlock(
+        this,
+        5000,
+        5000,
+        "gem",
+        this.gameplayParameter.baseScrollSpeed,
+        "death"
+      );
       obj.setVisible(false);
       obj.setActive(false);
-      this._interactables.push(obj);   
+      this._interactables.push(obj);
     }
 
     this.shuffleInteractables();
 
     this._pool = new Pool(this.physics.world, this, this._interactables);
-
   }
 
-  shuffleInteractables():void {
+  shuffleInteractables(): void {
     this._interactables = shuffleArray(this._interactables);
   }
 
@@ -254,7 +281,7 @@ export default class GameScene extends Phaser.Scene {
     );
 
     // Events
-    this.physics.add.overlap(this._character, this._pool, (player, pool) => { 
+    this.physics.add.overlap(this._character, this._pool, (player, pool) => {
       this.changeState(new GameOverState(this));
     });
   }
@@ -270,7 +297,14 @@ export default class GameScene extends Phaser.Scene {
     this.keyUp = this.input.keyboard.addKey(KeyCodes.UP);
     this.keyDown = this.input.keyboard.addKey(KeyCodes.DOWN);
     this.keyReset = this.input.keyboard.addKey(KeyCodes.R);
-    var debugGameOver = this.input.keyboard.addKey(KeyCodes.G);
+    var debugGameOver: Phaser.Input.Keyboard.Key = this.input.keyboard.addKey(
+      KeyCodes.G
+    );
+
+    this.keyUp.off("down");
+    this.keyDown.off("down");
+    this.keyReset.off("down");
+    debugGameOver.off("down");
 
     this.keyUp.on(
       "down",
@@ -293,6 +327,7 @@ export default class GameScene extends Phaser.Scene {
       },
       this
     );
+
     debugGameOver.on(
       "down",
       (e) => {
@@ -323,26 +358,21 @@ export default class GameScene extends Phaser.Scene {
 
     // Set keyboard keys
     this.initKeys();
-
-    
   }
 
   // CONSTRUCTOR AND LIFECYCLE ===========================
 
   constructor() {
     super({ key: "GameScene" });
-   
   }
 
-  preload(): void {
-    
-  }
+  preload(): void {}
 
   create(): void {
     // init games
     this.initGames();
-     // Assign the fist state
-     this.changeState(new GameStartState(this));
+    // Assign the fist state
+    this.changeState(new GameStartState(this));
   }
 
   update(): void {

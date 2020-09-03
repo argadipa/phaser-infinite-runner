@@ -3,12 +3,11 @@ import { getRandomInt, shuffleArray } from "../Util/Util";
 
 export default class GameStartState extends State {
   private lastSpawn: number = 0;
+  private baseScrollSpeed: number;
 
   constructor(gameScene: Phaser.Scene) {
     super(gameScene);
   }
-
-  private baseScrollSpeed: number;
 
   begin() {
     console.log("begin in GameStartState");
@@ -30,6 +29,8 @@ export default class GameStartState extends State {
     if (this.gameScene.state !== this) {
       this.gameScene.events.off("update", this.updateScrollHandler, this);
     }
+
+    // set up the interactables position
     if (time > this.lastSpawn) {
       let newInteractables = this.gameScene.pool.spawn(1250, 572);
       switch (newInteractables.texture.key) {

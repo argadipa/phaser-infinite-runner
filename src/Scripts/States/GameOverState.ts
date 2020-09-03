@@ -1,5 +1,4 @@
 import State from "./State";
-import { config } from "../Config/PhaserConfig";
 
 export default class GameOverState extends State{
     constructor(gameScene:Phaser.Scene){
@@ -18,6 +17,7 @@ export default class GameOverState extends State{
             i.disableBody();
         });
         this.gameScene.add.text(400, 300, 'Game Over\nPress R to Restart', { color: '#000000', align: 'center', fontSize: '48px' } );
+        this.gameScene.fpsText.removeUpdateEvent();
     }
 
     restart() {

@@ -179,6 +179,7 @@ export interface IGameplayParameter {
   boxSpawnPositionY?: number;
   minSpawnTimer?: number;
   maxSpawnTimer?: number;
+  characterDuckTime?: number;
 }
 
 export interface IGameData {
