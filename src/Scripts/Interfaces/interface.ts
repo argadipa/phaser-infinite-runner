@@ -164,4 +164,27 @@ interface ILevelConfig {
   level_settings_available_powerup: IPowerUp;
 
   level_settings_map: IRow[];
+
+
+  
+}
+
+/// for this game
+
+export interface IGameplayParameter {
+  baseScrollSpeed?: number;
+  baseScorePoint?: number;
+  baseTimeIntervalAddScore?: number;
+}
+
+export interface IGameData {
+  score?: number,
+}
+
+export interface ICanAddScore {
+  addScore(score:number): void
+}
+
+interface ICanKill {
+  kill():void
 }

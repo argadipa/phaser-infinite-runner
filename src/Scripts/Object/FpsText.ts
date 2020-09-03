@@ -5,9 +5,12 @@ export default class FpsText extends Phaser.GameObjects.Text {
     super(scene, 10, 10, '', { color: 'white', fontSize: '28px' })
     scene.add.existing(this)
     this.setOrigin(0)
+    scene.events.on('update', this.updateHandler, this);
+    scene.events.on('destroy', () => { this.scene.events.off('update', this.updateHandler); }, this);
   }
 
-  update() {
-    this.setText(`fps: ${Math.floor(this.scene.game.loop.actualFps)}`)
+  updateHandler(time, delta) {
+    // TODO: Bugged when restarting the scene
+    //this.setText(`fps: ${Math.floor(this.scene.game.loop.actualFps)}`);
   }
 }
