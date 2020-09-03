@@ -1,14 +1,15 @@
 import * as Phaser from 'phaser';
 const JUMP_FORCE:number = 400;
-
+const bodyHeight:number = 92;
+const bodyWidth:number = 92;
 export default class Character extends Phaser.Physics.Arcade.Sprite {
     constructor(scene: Phaser.Scene, x:number, y:number, texture:string, frame?:string){
         super(scene, x, y, texture);
         scene.add.existing(this);
         scene.physics.add.existing(this, false);
-        this.setCollideWorldBounds(true);
         this.setInteractive();
         this.setGravity(0, 400);
+        this.body.setSize(bodyWidth, bodyHeight);
         this.debugShowBody = true;
     }
 
@@ -47,11 +48,12 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
 
         this._isDucking = true;
         this.play('duck');
-        //this.setBodySize(1, 0.5);
+        this.setBodySize(bodyWidth, bodyHeight / 2);
+        this.body.setOffset(0,50);
         this.scene.time.addEvent({
             delay: 1500,
             callback: () => {
-          //    this.setBodySize(1,1, true);
+                this.setBodySize(bodyWidth, bodyHeight);
                 this._isDucking = false;
                 this.walk();
             }

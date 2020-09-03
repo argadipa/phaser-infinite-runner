@@ -175,6 +175,10 @@ export interface IGameplayParameter {
   baseScrollSpeed?: number;
   baseScorePoint?: number;
   baseTimeIntervalAddScore?: number;
+  boxSpawnPositionX?: number;
+  boxSpawnPositionY?: number;
+  minSpawnTimer?: number;
+  maxSpawnTimer?: number;
 }
 
 export interface IGameData {

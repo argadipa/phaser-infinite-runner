@@ -1,9 +1,9 @@
 import State from "./State";
-import Character from "../Object/Character";
-import { Scene } from "phaser";
-import { STATE_TYPE } from "../Enums";
+import { getRandomInt, shuffleArray } from "../Util/Util";
 
 export default class GameStartState extends State {
+  private lastSpawn: number = 0;
+
   constructor(gameScene: Phaser.Scene) {
     super(gameScene);
   }
@@ -15,12 +15,8 @@ export default class GameStartState extends State {
     // scoll up the scrollables
     const { baseScrollSpeed } = this.gameScene.gameplayParameter;
     this.baseScrollSpeed = baseScrollSpeed;
-
-    this.gameScene.events.on(
-      "update",
-      this.updateScrollHandler,
-      this
-    );
+    this.gameScene.shuffleInteractables();
+    this.gameScene.events.on("update", this.updateScrollHandler, this);
     this.gameScene.character.walk();
   }
 
@@ -31,9 +27,31 @@ export default class GameStartState extends State {
     this.gameScene.sky.updateScroll(this.baseScrollSpeed * 0.16);
 
     // kill the events when changing states!
-    if(this.gameScene.state !== this) {
-        this.gameScene.events.off('update', this.updateScrollHandler, this);
-        // ^^^^ POTENTIALLY MAKE TROUBLES! - CHECK UP AFTER TESTING ANOTHER STATE
+    if (this.gameScene.state !== this) {
+      this.gameScene.events.off("update", this.updateScrollHandler, this);
+    }
+    if (time > this.lastSpawn) {
+      let newInteractables = this.gameScene.pool.spawn(1250, 572);
+      switch (newInteractables.texture.key) {
+        case "woodenBlock":
+          newInteractables.setY(572);
+          break;
+        case "deathSpinner":
+          newInteractables.setY(515);
+          break;
+        case "gem":
+          newInteractables.setY(400);
+          break;
+        default:
+          break;
+      }
+
+      this.lastSpawn =
+        time +
+        getRandomInt(
+          this.gameScene.gameplayParameter.minSpawnTimer,
+          this.gameScene.gameplayParameter.maxSpawnTimer
+        );
     }
   }
 
