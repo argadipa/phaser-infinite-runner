@@ -4,6 +4,7 @@ import Scrollables from "../Object/Scrollables";
 import InstructionText from "../Object/InstructionText";
 import ScoreText from "../Object/ScoreText";
 import Character from "../Object/Character";
+import Interactables from "../Object/Interactables";
 import InteractablesBlock from "../Object/InteractablesBlock";
 import InteractablesSpinner from "../Object/InteractablesSpinner";
 import InteractablesPoint from "../Object/InteractablesPoint";
@@ -14,7 +15,7 @@ import GameStartState from "../States/GameStartState";
 import GameOverState from "../States/GameOverState";
 import { shuffleArray } from "../Util/Util";
 import type { IGameplayParameter, IGameData } from "../Interfaces/interface";
-import Interactables from "../Object/Interactables";
+
 
 export default class GameScene extends Phaser.Scene {
   // game parameter
@@ -141,6 +142,10 @@ export default class GameScene extends Phaser.Scene {
     return this._spinnerCollider;
   }
 
+  // audio
+  private _jump: any;
+  private _coin: any; 
+  
   // helpers
   private _pool: Pool;
   get pool(): Pool {
@@ -159,7 +164,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   // INITS ============================
-
   initHelpers(): void {
     this._scoreGiver = new ScoreGiver(this, this._gamePlayParameter, 0);
   }
@@ -172,6 +176,11 @@ export default class GameScene extends Phaser.Scene {
     );
 
     this._scoreText = new ScoreText(this, `${this._gameData.score}`);
+  }
+
+  initAudios(): void {
+    this._jump = this.sound.add('jump');
+    this._coin = this.sound.add('coin');
   }
 
   initAnimations(): void {
@@ -301,6 +310,7 @@ export default class GameScene extends Phaser.Scene {
     );
   }
 
+  // shuffle the pool
   shuffleInteractables(): void {
     this._interactables = shuffleArray(this._interactables);
   }
@@ -312,22 +322,6 @@ export default class GameScene extends Phaser.Scene {
       this._character,
       this._topGround
     );
-    // this._interactablesCollider = this.physics.add.collider(
-    //   this._character,
-    //   this._pool
-    // );
-    // this._boxCollider = this.physics.add.collider(
-    //   this._character,
-    //   this._interactablesBlock
-    // );
-    // this._spinnerCollider = this.physics.add.collider(
-    //   this._character,
-    //   this._interactablesSpinner
-    // );
-    // this._pointCollider = this.physics.add.collider(
-    //   this._character,
-    //   this._interactablesPoint
-    // );
 
     // Collision events
     this.physics.add.overlap(
@@ -340,9 +334,9 @@ export default class GameScene extends Phaser.Scene {
             this.scoreGiver.addToCurrentScore(
               this.gameplayParameter.baseScorePoint * 3
             );
+            this._coin.play();
             pool.setPosition(5000,5000);
             this._pool.despawn(pool);
-            
             break;
           case "deathSpinner":
             this.changeState(new GameOverState(this));
@@ -422,6 +416,9 @@ export default class GameScene extends Phaser.Scene {
 
     // create the animations
     this.initAnimations();
+
+    // create the sounds
+    this.initAudios();
 
     // Create the Game Objects
     this.initGameObjects();
