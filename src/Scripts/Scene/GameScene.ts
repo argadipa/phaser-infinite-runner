@@ -5,6 +5,8 @@ import InstructionText from "../Object/InstructionText";
 import ScoreText from "../Object/ScoreText";
 import Character from "../Object/Character";
 import InteractablesBlock from "../Object/InteractablesBlock";
+import InteractablesSpinner from "../Object/InteractablesSpinner";
+import InteractablesPoint from "../Object/InteractablesPoint";
 import Pool from "../Object/Pool";
 import ScoreGiver from "../Object/ScoreGiver";
 import State from "../States/State";
@@ -53,7 +55,10 @@ export default class GameScene extends Phaser.Scene {
   private _bottomGround: Scrollables;
   private _mountains: Scrollables;
   private _sky: Scrollables;
-  private _interactables: Array<InteractablesBlock>;
+  private _interactablesBlock: Array<InteractablesBlock>;
+  private _interactablesSpinner: Array<InteractablesSpinner>;
+  private _interactablesPoint: Array<InteractablesPoint>;
+  private _interactables: Array<Interactables>;
   public _character: Character;
 
   get character(): Character {
@@ -76,8 +81,20 @@ export default class GameScene extends Phaser.Scene {
     return this._sky;
   }
 
-  get interactables(): Array<InteractablesBlock> {
+  get interactables(): Array<Phaser.Physics.Arcade.Image> {
     return this._interactables;
+  }
+
+  get interactablesBlock(): Array<InteractablesBlock> {
+    return this._interactablesBlock;
+  }
+
+  get interactablesSpinner(): Array<InteractablesSpinner> {
+    return this._interactablesSpinner;
+  }
+
+  get interactablesPoint(): Array<InteractablesPoint> {
+    return this._interactablesPoint;
   }
 
   // ui interfaces
@@ -88,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
   get fpsText(): FpsText {
     return this._fpsText;
   }
-  
+
   get scoreText(): ScoreText {
     return this._scoreText;
   }
@@ -104,12 +121,24 @@ export default class GameScene extends Phaser.Scene {
   // colliders
   private _platformCollider: Phaser.Physics.Arcade.Collider;
   private _interactablesCollider: Phaser.Physics.Arcade.Collider;
+  private _pointCollider: Phaser.Physics.Arcade.Collider;
+  private _boxCollider: Phaser.Physics.Arcade.Collider;
+  private _spinnerCollider: Phaser.Physics.Arcade.Collider;
 
-  get platformCollider(): any {
+  get platformCollider(): Phaser.Physics.Arcade.Collider {
     return this._platformCollider;
   }
-  get interactablesCollider(): any {
+  get interactablesCollider(): Phaser.Physics.Arcade.Collider {
     return this._interactablesCollider;
+  }
+  get pointCollider(): Phaser.Physics.Arcade.Collider {
+    return this._pointCollider;
+  }
+  get boxCollider(): Phaser.Physics.Arcade.Collider {
+    return this._boxCollider;
+  }
+  get spinnerCollider(): Phaser.Physics.Arcade.Collider {
+    return this._spinnerCollider;
   }
 
   // helpers
@@ -178,7 +207,6 @@ export default class GameScene extends Phaser.Scene {
       "char",
       this.gameplayParameter
     );
-    this._character.addCollider(this._platformCollider);
 
     this._topGround = new Scrollables(
       this,
@@ -216,9 +244,12 @@ export default class GameScene extends Phaser.Scene {
       "sky"
     );
 
-    this._interactables = new Array<InteractablesBlock>();
+    this._interactables = new Array<Interactables>();
+    this._interactablesBlock = new Array<InteractablesBlock>();
+    this._interactablesSpinner = new Array<InteractablesSpinner>();
+    this._interactablesPoint = new Array<InteractablesPoint>();
 
-    for (let index = 0; index < 5; index++) {
+    for (let index = 0; index < 15; index++) {
       const obj: InteractablesBlock = new InteractablesBlock(
         this,
         5000,
@@ -232,13 +263,14 @@ export default class GameScene extends Phaser.Scene {
       this._interactables.push(obj);
     }
 
-    for (let index = 0; index < 5; index++) {
-      const obj: InteractablesBlock = new InteractablesBlock(
+    for (let index = 0; index < 15; index++) {
+      const obj: InteractablesSpinner = new InteractablesSpinner(
         this,
         5000,
         5000,
         "deathSpinner",
         this.gameplayParameter.baseScrollSpeed,
+        3,
         "death"
       );
       obj.setVisible(false);
@@ -246,8 +278,8 @@ export default class GameScene extends Phaser.Scene {
       this._interactables.push(obj);
     }
 
-    for (let index = 0; index < 5; index++) {
-      const obj: InteractablesBlock = new InteractablesBlock(
+    for (let index = 0; index < 15; index++) {
+      const obj: InteractablesPoint = new InteractablesPoint(
         this,
         5000,
         5000,
@@ -262,7 +294,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.shuffleInteractables();
 
-    this._pool = new Pool(this.physics.world, this, this._interactables);
+    this._pool = new Pool(
+      this.scene.scene.physics.world,
+      this,
+      this._interactables
+    );
   }
 
   shuffleInteractables(): void {
@@ -271,19 +307,58 @@ export default class GameScene extends Phaser.Scene {
 
   initPhysics(): void {
     this.physics.add.existing(this._topGround, true);
+
     this._platformCollider = this.physics.add.collider(
       this._character,
       this._topGround
     );
-    this._interactablesCollider = this.physics.add.collider(
-      this._character,
-      this._pool
-    );
+    // this._interactablesCollider = this.physics.add.collider(
+    //   this._character,
+    //   this._pool
+    // );
+    // this._boxCollider = this.physics.add.collider(
+    //   this._character,
+    //   this._interactablesBlock
+    // );
+    // this._spinnerCollider = this.physics.add.collider(
+    //   this._character,
+    //   this._interactablesSpinner
+    // );
+    // this._pointCollider = this.physics.add.collider(
+    //   this._character,
+    //   this._interactablesPoint
+    // );
 
-    // Events
-    this.physics.add.overlap(this._character, this._pool, (player, pool) => {
-      this.changeState(new GameOverState(this));
-    });
+    // Collision events
+    this.physics.add.overlap(
+      this._character,
+      this._pool,
+      (player: Character, pool: Phaser.Physics.Arcade.Image) => {
+        console.log(pool.texture.key);
+        switch (pool.texture.key) {
+          case "gem":
+            this.scoreGiver.addToCurrentScore(
+              this.gameplayParameter.baseScorePoint * 3
+            );
+            pool.setPosition(5000,5000);
+            this._pool.despawn(pool);
+            
+            break;
+          case "deathSpinner":
+            this.changeState(new GameOverState(this));
+            break;
+          case "woodenBlock":
+            this.changeState(new GameOverState(this));
+            break;
+          default:
+            break;
+        }
+        //this.changeState(new GameOverState(this));
+      },
+      (player, poll) => {
+        return true;
+      }
+    );
   }
 
   initZIndex(): void {
@@ -301,6 +376,7 @@ export default class GameScene extends Phaser.Scene {
       KeyCodes.G
     );
 
+    // make sure to kill the events so they are not duplicated when restarting the scenes! --IMPORTANT
     this.keyUp.off("down");
     this.keyDown.off("down");
     this.keyReset.off("down");

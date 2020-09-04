@@ -1,15 +1,16 @@
 import * as Phaser from 'phaser';
+import { IInteractables } from '../Interfaces/interface';
 
-export default abstract class Interactables extends Phaser.Physics.Arcade.Image {
-    private _speed:number;
-    private _collideEffect:string;      // Should use enum in the future
+export default abstract class Interactables extends Phaser.Physics.Arcade.Image implements IInteractables {
+    _speed:number;
+    _collideEffect:string;
 
     constructor(scene: Phaser.Scene, x:number, y:number, texture:string, speed:number, collideEffect:string){
         super(scene, x, y, texture);
         this._speed = speed;
         this._collideEffect = collideEffect;
         scene.add.existing(this);
-        scene.physics.add.existing(this);
+        scene.physics.add.existing(this, false);
         this.setGravity(0, 400);
         this.body.debugShowBody = true;
         
@@ -30,10 +31,7 @@ export default abstract class Interactables extends Phaser.Physics.Arcade.Image 
 
     stopMoving(): void {
         this.scene.events.off('update', this.moveHandler, this);
-      }
-
-    updateScroll(speed:number): void {
-        this._speed = speed;
-        this.setX(-this._speed);
     }
+
+
 }

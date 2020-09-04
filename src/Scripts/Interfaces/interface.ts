@@ -186,10 +186,19 @@ export interface IGameData {
   score?: number,
 }
 
+export interface IInteractables {
+  _speed: number,
+  _collideEffect: string
+  stopMoving(): void
+}
+
 export interface ICanAddScore {
   addScore(score:number): void
 }
-
-interface ICanKill {
+export interface ICanKill {
   kill():void
+}
+
+export interface ICanRotate {
+  rotate():void
 }
