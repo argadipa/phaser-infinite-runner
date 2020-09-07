@@ -1,0 +1,1 @@
+web: node src/Scripts/app.ts
