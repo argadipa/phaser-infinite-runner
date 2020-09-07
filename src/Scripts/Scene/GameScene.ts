@@ -9,7 +9,7 @@ import InteractablesBlock from "../Object/InteractablesBlock";
 import InteractablesSpinner from "../Object/InteractablesSpinner";
 import InteractablesPoint from "../Object/InteractablesPoint";
 import Pool from "../Object/Pool";
-import ScoreGiver from "../Object/ScoreGiver";
+import ScoreManager from "../Object/ScoreManager";
 import State from "../States/State";
 import GameStartState from "../States/GameStartState";
 import GameOverState from "../States/GameOverState";
@@ -26,7 +26,7 @@ export default class GameScene extends Phaser.Scene {
     boxSpawnPositionX: 1000,
     boxSpawnPositionY: 300,
     minSpawnTimer: 1000,
-    maxSpawnTimer: 4000,
+    maxSpawnTimer: 3200,
     characterDuckTime: 1000,
   };
 
@@ -152,10 +152,13 @@ export default class GameScene extends Phaser.Scene {
     return this._pool;
   }
 
-  private _scoreGiver: ScoreGiver;
-  get scoreGiver(): ScoreGiver {
-    return this._scoreGiver;
+  private _scoreManager: ScoreManager;
+  get scoreManager(): ScoreManager {
+    return this._scoreManager;
   }
+
+  // events
+  public onScoreChangeEvents: Phaser.Events.EventEmitter;
 
   // use this for change the game states!
   changeState(newState: State) {
@@ -165,7 +168,7 @@ export default class GameScene extends Phaser.Scene {
 
   // INITS ============================
   initHelpers(): void {
-    this._scoreGiver = new ScoreGiver(this, this._gamePlayParameter, 0);
+    this._scoreManager = new ScoreManager(this, this._gamePlayParameter, 0, this.onScoreChangeEvents);
   }
 
   initInterface(): void {
@@ -328,10 +331,9 @@ export default class GameScene extends Phaser.Scene {
       this._character,
       this._pool,
       (player: Character, pool: Phaser.Physics.Arcade.Image) => {
-        console.log(pool.texture.key);
         switch (pool.texture.key) {
           case "gem":
-            this.scoreGiver.addToCurrentScore(
+            this.scoreManager.addToCurrentScore(
               this.gameplayParameter.baseScorePoint * 3
             );
             this._coin.play();
@@ -407,9 +409,20 @@ export default class GameScene extends Phaser.Scene {
     );
   }
 
+  initEvents():void {
+    this.onScoreChangeEvents = new Phaser.Events.EventEmitter();
+    this.onScoreChangeEvents.addListener('updateScore', (v) => {
+      this.scoreText.updateScore(v);
+      console.log('update score');
+    }, this);
+  }
+
   initGames(): void {
     // create the helpers
     this.initHelpers();
+
+    // Init events
+    this.initEvents();
 
     // create the ui interfaces
     this.initInterface();
@@ -431,6 +444,11 @@ export default class GameScene extends Phaser.Scene {
 
     // Set keyboard keys
     this.initKeys();
+
+  }
+
+  updateScore(score:number){
+    this.scoreText.updateScore(score);
   }
 
   // CONSTRUCTOR AND LIFECYCLE ===========================
@@ -450,6 +468,6 @@ export default class GameScene extends Phaser.Scene {
 
   update(): void {
     //TEST ONLY
-    this._scoreText.updateScore(this._scoreGiver.getCurrentScore());
+    this._scoreText.updateScore(this._scoreManager.getCurrentScore());
   }
 }

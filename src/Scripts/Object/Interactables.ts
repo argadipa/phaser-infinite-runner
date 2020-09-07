@@ -19,7 +19,7 @@ export default abstract class Interactables extends Phaser.Physics.Arcade.Image 
 
     moveHandler(time, delta):void{
         this.x -= this._speed;
-        if(this.x < -10) {
+        if(this.x < -250) {
             this.setActive(false);
             this.setVisible(false);
         }

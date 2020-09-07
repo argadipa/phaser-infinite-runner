@@ -7,7 +7,6 @@ export default class GameOverState extends State{
     }
 
     begin(){
-        // TODO: Show game over text
         console.log(this.gameScene.interactables);
 
         this.gameScene.interactables.map((i: Interactables) => {
@@ -18,7 +17,7 @@ export default class GameOverState extends State{
         this.gameScene.character.dead();
         this.gameScene.physics.world.removeCollider(this.gameScene.platformCollider);
         this.gameScene.physics.world.removeCollider(this.gameScene.interactablesCollider);
-        this.gameScene.scoreGiver.stopScoreGeneration();
+        this.gameScene.scoreManager.stopScoreGeneration();
         
         this.gameScene.add.text(400, 300, 'Game Over\nPress R to Restart', { color: '#000000', align: 'center', fontSize: '48px' } );
         this.gameScene.fpsText.removeUpdateEvent();

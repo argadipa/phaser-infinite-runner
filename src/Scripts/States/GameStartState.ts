@@ -17,6 +17,13 @@ export default class GameStartState extends State {
     this.gameScene.shuffleInteractables();
     this.gameScene.events.on("update", this.updateScrollHandler, this);
     this.gameScene.character.walk();
+    // this.gameScene.events.off('updateScore');
+    // this.gameScene.events.on('updateScore', this.updateScoreHandler, this);
+  }
+
+  updateScoreHandler(score) {
+    console.log('add score event fired');
+    this.gameScene.scoreText.updateScore(score);
   }
 
   updateScrollHandler(time, delta) {

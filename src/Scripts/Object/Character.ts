@@ -68,6 +68,9 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     dead():void {
         console.log('character dead');
         this.play('jump');
-        //this.scene.physics.world.removeCollider(this._activeCollider);
+        this.scene.time.addEvent({
+            delay: 6000,
+            callback: () => {this.destroy();}
+        });
     }
 }
