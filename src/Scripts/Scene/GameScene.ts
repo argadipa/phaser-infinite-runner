@@ -411,7 +411,7 @@ export default class GameScene extends Phaser.Scene {
 
   initEvents():void {
     this.onScoreChangeEvents = new Phaser.Events.EventEmitter();
-    this.onScoreChangeEvents.addListener('updateScore', (v) => {
+    this.onScoreChangeEvents.on('updateScore', (v) => {
       this.scoreText.updateScore(v);
       console.log('update score');
     }, this);
