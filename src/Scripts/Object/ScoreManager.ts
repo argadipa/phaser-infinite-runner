@@ -31,8 +31,6 @@ export default class ScoreManager extends Phaser.GameObjects.GameObject {
       };
 
     this.scene.time.addEvent(this._timerConfig);
-
-    console.log(onScoreChange);
   }
 
   stopScoreGeneration(): void {

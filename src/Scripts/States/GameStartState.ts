@@ -22,16 +22,11 @@ export default class GameStartState extends State {
     // this.gameScene.events.on('updateScore', this.updateScoreHandler, this);
   }
 
-  updateScoreHandler(score) {
-    console.log('add score event fired');
-    this.gameScene.scoreText.updateScore(score);
-  }
-
   updateScrollHandler(time, delta) {
-    this.gameScene.bottomGround.updateScroll(this.baseScrollSpeed);
-    this.gameScene.topGround.updateScroll(this.baseScrollSpeed);
-    this.gameScene.mountains.updateScroll(this.baseScrollSpeed * 0.5);
-    this.gameScene.sky.updateScroll(this.baseScrollSpeed * 0.16);
+    this.gameScene.bottomGround.updateScroll(this.baseScrollSpeed * delta * 0.001);
+    this.gameScene.topGround.updateScroll(this.baseScrollSpeed * delta * 0.001);
+    this.gameScene.mountains.updateScroll(this.baseScrollSpeed * delta * 0.001 * 0.25);
+    this.gameScene.sky.updateScroll(this.baseScrollSpeed * delta * 0.001 * 0.15);
 
     // kill the events when changing states!
     if (this.gameScene.state !== this) {
@@ -43,10 +38,12 @@ export default class GameStartState extends State {
       let random = Math.floor((Math.random() * this.gameScene.interactables.length) + 1);
 
       let newInteractables = this.gameScene.pool.spawnNth(random, 1250, 572);
+
+      if(newInteractables == null) return;
       
       switch (newInteractables.texture.key) {
         case "woodenBlock":
-          newInteractables.setY(572);
+          newInteractables.setY(575);
           break;
         case "deathSpinner":
           newInteractables.setY(515);

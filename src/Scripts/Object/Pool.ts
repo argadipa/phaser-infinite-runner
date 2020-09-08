@@ -17,19 +17,24 @@ export default class Pool extends Phaser.Physics.Arcade.Group {
   spawn(x:number, y:number) {
     var rand = Math.floor((Math.random() * this.getLength()) + 1);
     const pool: Phaser.Physics.Arcade.Image = this.get(x, y);
+
+    if(pool){
     pool.setVisible(true);
     pool.setActive(true);
-
     return pool;
+    }
+    return null;
   }
 
   spawnNth(index:number,x:number, y:number) {
     var rand = Math.floor((Math.random() * this.getLength()) + 1);
-    const pool: Phaser.Physics.Arcade.Image = this.getFirstNth(index, false, false, x, y);
-    pool.setVisible(true);
-    pool.setActive(true);
-
-    return pool;
+    const pool: Phaser.Physics.Arcade.Image = this.getLastNth(index, false, false, x, y);
+    if(pool) {
+      pool.setVisible(true);
+      pool.setActive(true);
+      return pool;
+    }
+    return null;
   }
 
   despawn(pool: Phaser.Physics.Arcade.Image) {

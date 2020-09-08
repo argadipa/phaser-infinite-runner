@@ -20,7 +20,7 @@ import type { IGameplayParameter, IGameData } from "../Interfaces/interface";
 export default class GameScene extends Phaser.Scene {
   // game parameter
   private _gamePlayParameter: IGameplayParameter = {
-    baseScrollSpeed: 4,
+    baseScrollSpeed: 250,
     baseScorePoint: 100,
     baseTimeIntervalAddScore: 3000,
     boxSpawnPositionX: 1000,
@@ -122,9 +122,7 @@ export default class GameScene extends Phaser.Scene {
   // colliders
   private _platformCollider: Phaser.Physics.Arcade.Collider;
   private _interactablesCollider: Phaser.Physics.Arcade.Collider;
-  private _pointCollider: Phaser.Physics.Arcade.Collider;
-  private _boxCollider: Phaser.Physics.Arcade.Collider;
-  private _spinnerCollider: Phaser.Physics.Arcade.Collider;
+
 
   get platformCollider(): Phaser.Physics.Arcade.Collider {
     return this._platformCollider;
@@ -132,19 +130,10 @@ export default class GameScene extends Phaser.Scene {
   get interactablesCollider(): Phaser.Physics.Arcade.Collider {
     return this._interactablesCollider;
   }
-  get pointCollider(): Phaser.Physics.Arcade.Collider {
-    return this._pointCollider;
-  }
-  get boxCollider(): Phaser.Physics.Arcade.Collider {
-    return this._boxCollider;
-  }
-  get spinnerCollider(): Phaser.Physics.Arcade.Collider {
-    return this._spinnerCollider;
-  }
 
   // audio
-  private _jump: any;
-  private _coin: any; 
+  private _jump: Phaser.Sound.BaseSound;
+  private _coin: Phaser.Sound.BaseSound; 
   
   // helpers
   private _pool: Pool;
