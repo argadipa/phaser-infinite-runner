@@ -7,13 +7,13 @@ export default class ScoreManager extends Phaser.GameObjects.GameObject {
   private _score: number;
   private _timerConfig: Phaser.Types.Time.TimerEventConfig;
 
-  private _onScoreChange: Phaser.Events.EventEmitter;
+  private _onScoreChange?: Phaser.Events.EventEmitter;
 
   constructor(
     scene: Phaser.Scene,
     gameParameter: IGameplayParameter,
     initialScore: number,
-    onScoreChange: Phaser.Events.EventEmitter
+    onScoreChange?: Phaser.Events.EventEmitter
   ) {
     super(scene, "ScoreGiver");
     this._gameplayParameter = gameParameter;
@@ -31,8 +31,9 @@ export default class ScoreManager extends Phaser.GameObjects.GameObject {
       };
 
     this.scene.time.addEvent(this._timerConfig);
-  }
 
+    console.log(onScoreChange);
+  }
 
   stopScoreGeneration(): void {
     this.scene.time.removeAllEvents();
@@ -44,8 +45,7 @@ export default class ScoreManager extends Phaser.GameObjects.GameObject {
 
   addToCurrentScore(addedValue: number): void {
     this._score += addedValue;
-    console.log(this._score);
-
+    console.log('e');
     if(this._onScoreChange != null){
       this._onScoreChange.emit('updateScore', this._score);
     }else {

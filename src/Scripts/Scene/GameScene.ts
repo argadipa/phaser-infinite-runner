@@ -411,6 +411,7 @@ export default class GameScene extends Phaser.Scene {
 
   initEvents():void {
     this.onScoreChangeEvents = new Phaser.Events.EventEmitter();
+    
     this.onScoreChangeEvents.on('updateScore', (v) => {
       this.scoreText.updateScore(v);
       console.log('update score');
@@ -418,11 +419,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   initGames(): void {
-    // create the helpers
-    this.initHelpers();
-
+    
     // Init events
     this.initEvents();
+
+    // create the helpers
+    this.initHelpers();
 
     // create the ui interfaces
     this.initInterface();
@@ -466,8 +468,5 @@ export default class GameScene extends Phaser.Scene {
     this.changeState(new GameStartState(this));
   }
 
-  update(): void {
-    //TEST ONLY
-    this._scoreText.updateScore(this._scoreManager.getCurrentScore());
-  }
+  update(): void {}
 }

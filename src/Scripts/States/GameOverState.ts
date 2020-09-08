@@ -7,8 +7,6 @@ export default class GameOverState extends State{
     }
 
     begin(){
-        console.log(this.gameScene.interactables);
-
         this.gameScene.interactables.map((i: Interactables) => {
             i.stopMoving();
             i.disableBody();
