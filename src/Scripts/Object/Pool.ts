@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import { IInteractables } from '../Interfaces/interface';
+import { shuffleArray } from '../Util/Util';
 
 export default class Pool extends Phaser.Physics.Arcade.Group {
   constructor(
@@ -13,9 +14,18 @@ export default class Pool extends Phaser.Physics.Arcade.Group {
     this.scene.add.existing(this);
   }
 
-  spawn(x, y) {
+  spawn(x:number, y:number) {
     var rand = Math.floor((Math.random() * this.getLength()) + 1);
     const pool: Phaser.Physics.Arcade.Image = this.get(x, y);
+    pool.setVisible(true);
+    pool.setActive(true);
+
+    return pool;
+  }
+
+  spawnNth(index:number,x:number, y:number) {
+    var rand = Math.floor((Math.random() * this.getLength()) + 1);
+    const pool: Phaser.Physics.Arcade.Image = this.getFirstNth(index, false, false, x, y);
     pool.setVisible(true);
     pool.setActive(true);
 

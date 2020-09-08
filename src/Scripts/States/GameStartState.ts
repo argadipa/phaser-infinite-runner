@@ -1,12 +1,10 @@
 import State from "./State";
 import { getRandomInt, shuffleArray } from "../Util/Util";
 
-const countToRandomize: number = 4;
 
 export default class GameStartState extends State {
   private lastSpawn: number = 0;
   private baseScrollSpeed: number;
-  private spawnCount = 0;
 
   constructor(gameScene: Phaser.Scene) {
     super(gameScene);
@@ -42,15 +40,10 @@ export default class GameStartState extends State {
 
     // set up the interactables position
     if (time > this.lastSpawn) {
-      this.spawnCount += 1;
-      
-      if(this.spawnCount >= countToRandomize)
-      {
-        this.gameScene.shuffleInteractables();
-        this.spawnCount = 0;
-      }
+      let random = Math.floor((Math.random() * this.gameScene.interactables.length) + 1);
 
-      let newInteractables = this.gameScene.pool.spawn(1250, 572);
+      let newInteractables = this.gameScene.pool.spawnNth(random, 1250, 572);
+      
       switch (newInteractables.texture.key) {
         case "woodenBlock":
           newInteractables.setY(572);
