@@ -10,7 +10,6 @@ export default class FpsText extends Phaser.GameObjects.Text {
   }
 
   updateHandler(time, delta) {
-    // TODO: Bugged when restarting the scene
     if(this.scene.game){
       this.setText(`fps: ${Math.floor(this.scene.game.loop.actualFps)}`);
     }

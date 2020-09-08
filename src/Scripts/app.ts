@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser';
 import { config } from "./Config/PhaserConfig";
 
 type GameConfig = Phaser.Types.Core.GameConfig; // why tho??
