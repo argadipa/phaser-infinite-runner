@@ -2,10 +2,10 @@
   "name": "phaser-game",
   "version": "0.1.0",
   "description": "starting scene",
-  "main": "src/Scripts/app.ts",
+  "main": "app.js",
   "scripts": {
-    "build": "webpack",
-    "start": "npm run build && webpack-dev-server --host=0.0.0.0 --port=$PORT --disable-host-check"
+    "build": "webpack --config prod.js",
+    "start": "webpack --watch & live-server --port=37622"
   },
   "author": "kevin sutrisno",
   "license": "MIT",
@@ -23,6 +23,5 @@
     "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2",
     "webpack": "^4.41.5"
-  },
-  "heroku-run-build-script": true
+  }
 }
