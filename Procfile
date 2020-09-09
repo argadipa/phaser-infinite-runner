@@ -1,0 +1,1 @@
+node: src/Scripts/app.ts
