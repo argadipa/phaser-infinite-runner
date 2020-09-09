@@ -4,7 +4,7 @@
   "description": "starting scene",
   "main": "dist/app.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config prod.js",
     "custom": "webpack --watch & live-server --port=37622",
     "start": "npm run build && webpack-dev-server --host=0.0.0.0 --port=$PORT --disable-host-check"
   },
