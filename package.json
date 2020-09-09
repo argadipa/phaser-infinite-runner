@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config prod.js",
     "custom": "webpack --watch & live-server --port=37622",
-    "start": "npm run build && webpack-dev-server --host=0.0.0.0 --port=$PORT --disable-host-check"
+    "start": "node server.js",
+    "heroku-postbuild": "webpack -p"
   },
   "author": "kevin sutrisno",
   "license": "MIT",
@@ -19,11 +20,13 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "live-server": "^1.2.1",
+    "path": "^0.12.7",
     "terser-webpack-plugin": "^2.3.5",
+    "webpack": "^4.41.5",
     "webpack-dev-server": "^3.10.3",
-    "webpack-merge": "^4.2.2",
-    "webpack": "^4.41.5"
+    "webpack-merge": "^4.2.2"
   },
   "heroku-run-build-script": true
 }
