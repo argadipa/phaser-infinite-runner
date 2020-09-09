@@ -35,7 +35,7 @@ export default class GameStartState extends State {
 
     // set up the interactables position
     if (time > this.lastSpawn) {
-      let random = Math.floor((Math.random() * this.gameScene.interactables.length) + 1);
+      let random = Math.floor((Math.random() * this.gameScene.interactables.length));
 
       let newInteractables = this.gameScene.pool.spawnNth(random, 1250, 572);
 

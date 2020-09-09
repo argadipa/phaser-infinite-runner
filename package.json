@@ -2,9 +2,9 @@
   "name": "phaser-game",
   "version": "0.1.0",
   "description": "starting scene",
-  "main": "app.js",
+  "main": "app.ts",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config prod.js",
     "start": "webpack --watch & live-server --port=8085"
   },
   "author": "kevin sutrisno",
@@ -16,5 +16,10 @@
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "terser-webpack-plugin": "^2.3.5",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
   }
 }
