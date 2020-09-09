@@ -2,7 +2,7 @@
   "name": "phaser-game",
   "version": "0.1.0",
   "description": "starting scene",
-  "main": "app.ts",
+  "main": "app.js",
   "scripts": {
     "build": "webpack --config prod.js",
     "start": "webpack --watch & live-server --port=37622"
@@ -18,8 +18,10 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
+    "live-server": "^1.2.1",
     "terser-webpack-plugin": "^2.3.5",
     "webpack-dev-server": "^3.10.3",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "webpack": "^4.41.5"
   }
 }
