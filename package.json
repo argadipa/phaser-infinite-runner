@@ -5,7 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "build": "webpack --config prod.js",
-    "start": "webpack --watch & live-server --port=8085"
+    "start": "webpack --watch & live-server --port=37622"
   },
   "author": "kevin sutrisno",
   "license": "MIT",
